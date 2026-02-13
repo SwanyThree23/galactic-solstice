@@ -8,9 +8,12 @@ import VideoUpload from '../components/VideoUpload';
 import { Share2, DollarSign, Settings, Users, Grid, Zap, Monitor, Lock, Mic, Upload, Radio } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from '../hooks/useSocket';
+import { streamApi } from '../services/api';
+import { useToast } from '../hooks/useToast';
 
 const Studio: React.FC = () => {
     const { socket, isConnected } = useSocket();
+    const { success, error: toastError } = useToast();
     const [isShareOpen, setIsShareOpen] = useState(false);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
     const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -180,7 +183,17 @@ const Studio: React.FC = () => {
                                     <AIStatusCard label="Clipper Agent" status="Standby" desc="Ready to auto-extract viral moments" />
                                     <AIStatusCard label="TTS Agent" status="Idle" desc="Text-to-speech for donations & alerts" />
                                 </div>
-                                <button className="btn-primary w-full py-4 mt-6">
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            await streamApi.getAIHighlights(streamId);
+                                            success('AI Scan started! Generating highlights...');
+                                        } catch {
+                                            toastError('Failed to start AI Scan');
+                                        }
+                                    }}
+                                    className="btn-primary w-full py-4 mt-6"
+                                >
                                     TRIGGER AI HIGHLIGHT SCAN
                                 </button>
                             </motion.div>
@@ -216,7 +229,7 @@ const Studio: React.FC = () => {
                                 exit={{ opacity: 0, x: -20 }}
                                 className="h-full"
                             >
-                                <ChatPanel />
+                                <ChatPanel streamId={streamId} />
                             </motion.div>
                         )}
                     </AnimatePresence>

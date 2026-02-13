@@ -5,9 +5,10 @@ interface DirectorControlsProps {
     guests: any[];
     onMute: (id: string) => void;
     onRemove: (id: string) => void;
+    onFinish?: () => void;
 }
 
-const DirectorControls: React.FC<DirectorControlsProps> = ({ guests, onMute, onRemove }) => {
+const DirectorControls: React.FC<DirectorControlsProps> = ({ guests, onMute, onRemove, onFinish }) => {
     return (
         <div className="flex flex-col h-full gap-6">
             <div className="flex items-center gap-2 mb-2">
@@ -55,7 +56,10 @@ const DirectorControls: React.FC<DirectorControlsProps> = ({ guests, onMute, onR
                 </div>
             </div>
 
-            <button className="btn-primary w-full py-4 mt-auto">
+            <button
+                onClick={onFinish}
+                className="btn-primary w-full py-4 mt-auto"
+            >
                 FINISH STREAM
             </button>
         </div>

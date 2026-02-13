@@ -22,7 +22,7 @@ const ChatPanel: React.FC<{ streamId?: string }> = ({ streamId = 'default' }) =>
     const sendMessage = () => {
         if (!input.trim() || !socket) return;
         const msg = { user: 'You', text: input, isPremium: false };
-        socket.emit('send_message', { streamId: 'default', ...msg });
+        socket.emit('send_message', { streamId, ...msg });
         setInput('');
     };
 
@@ -65,6 +65,7 @@ const ChatPanel: React.FC<{ streamId?: string }> = ({ streamId = 'default' }) =>
                     />
                     <button
                         onClick={sendMessage}
+                        title="Send Message"
                         className="absolute right-2 top-1.5 p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
                     >
                         <Send size={20} />
