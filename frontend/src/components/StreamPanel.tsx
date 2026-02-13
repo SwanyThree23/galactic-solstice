@@ -97,6 +97,7 @@ const StreamPanel: React.FC<StreamPanelProps> = ({ guest, isEnlarged, onClick, s
                                     src={`https://vdo.ninja/?view=${guest.ninjaId}&autoplay&latency=20&push=k&transparent&bgcol=000&id=${guest.id}`}
                                     className="absolute inset-0 w-full h-full border-0 pointer-events-none"
                                     allow="autoplay; camera; microphone; fullscreen; picture-in-picture;"
+                                    title={`Live stream feed for ${guest.name}`}
                                 />
                             ) : (
                                 <img
