@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Send, Heart, Gift, MessageCircle } from 'lucide-react';
 import { useSocket } from '../hooks/useSocket';
 
-const ChatPanel: React.FC = () => {
+const ChatPanel: React.FC<{ streamId?: string }> = ({ streamId = 'default' }) => {
     const { socket } = useSocket();
     const [messages, setMessages] = useState([
         { id: '1', user: 'LivoFan', text: 'This stream is fire! 🔥', isPremium: false },

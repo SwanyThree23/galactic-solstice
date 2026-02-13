@@ -1,38 +1,34 @@
 #!/bin/bash
-# YLIV 4.0 | Production Deployment Script
-# This script automates the deployment of SeeWhy LIVE to a production Linux server.
 
-echo "🚀 Starting YLIV 4.0 Deployment..."
+# YLIV 4.0 Deployment Script (Linux/macOS)
 
-# 1. Check for Docker
-if ! [ -x "$(command -v docker)" ]; then
-  echo '❌ Error: docker is not installed.' >&2
-  exit 1
-fi
+echo -e "\e[36m==========================================\e[0m"
+echo -e "\e[36m   YLIV 4.0 - AUTOMATED DEPLOYMENT      \e[0m"
+echo -e "\e[36m==========================================\e[0m"
 
-# 2. Update Environment
-echo "📝 Configuring environment..."
-if [ ! -f backend/.env ]; then
-    cp backend/.env.example backend/.env
-    echo "⚠️ Created backend/.env from example. Please update it with production secrets."
-fi
+# 1. Setup Backend
+echo -e "\e[33m[1/4] Setting up Backend...\e[0m"
+cd backend
+npm install
+npm run prisma:generate
+npm run db:setup
+npm run build
+cd ..
 
-# 3. Build and Start Stack
-echo "🏗️ Building and launching Docker containers..."
-docker-compose up -d --build
+# 2. Setup Frontend
+echo -e "\e[33m[2/4] Setting up Frontend...\e[0m"
+cd frontend
+npm install
+npm run build
+cd ..
 
-# 4. Success Check
-echo "⏳ Waiting for database to be ready..."
-sleep 10
+# 3. Launch Services
+echo -e "\e[33m[3/4] Launching Production Services...\e[0m"
+docker-compose up -d
 
-# 5. Run Migrations
-echo "🗄️ Running database migrations..."
-docker-compose exec backend npx prisma migrate deploy
-
-# 6. Final Status
-echo "✅ Deployment Complete!"
-echo "------------------------------------------------"
-echo "Frontend: http://localhost:3000"
-echo "Backend:  http://localhost:4000"
-echo "------------------------------------------------"
-echo "Run 'docker-compose logs -f' to monitor the system."
+# 4. Success
+echo -e "\e[32m==========================================\e[0m"
+echo -e "\e[32m   DEPLOYMENT SUCCESSFUL!               \e[0m"
+echo -e "\e[32m   Frontend: http://localhost:3001      \e[0m"
+echo -e "\e[32m   Backend:  http://localhost:4000      \e[0m"
+echo -e "\e[32m==========================================\e[0m"
