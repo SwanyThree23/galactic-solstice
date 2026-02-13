@@ -10,13 +10,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from '../hooks/useSocket';
 
 const Studio: React.FC = () => {
-    const { isConnected } = useSocket();
+    const { socket, isConnected } = useSocket();
     const [isShareOpen, setIsShareOpen] = useState(false);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
     const [isUploadOpen, setIsUploadOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('chat');
     const [streamType, setStreamType] = useState('grid'); // single, grid, audio
     const [isLive, setIsLive] = useState(false);
+    const streamId = "cy-live-prod-001";
+
+    React.useEffect(() => {
+        if (socket) {
+            socket.emit('join_stream', streamId);
+        }
+    }, [socket, streamId]);
 
     const [guests, setGuests] = useState([
         { id: '1', name: 'Host_Alex', isMuted: false, isVideoOff: false },
@@ -32,10 +39,16 @@ const Studio: React.FC = () => {
 
     const handleMuteGuest = (id: string) => {
         setGuests(prev => prev.map(g => g.id === id ? { ...g, isMuted: !g.isMuted } : g));
+        if (socket) {
+            socket.emit('director_mute_guest', { streamId, guestId: id });
+        }
     };
 
     const handleRemoveGuest = (id: string) => {
         setGuests(prev => prev.filter(g => g.id !== id));
+        if (socket) {
+            socket.emit('director_remove_guest', { streamId, guestId: id });
+        }
     };
 
     const toggleLive = () => setIsLive(!isLive);
