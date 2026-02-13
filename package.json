@@ -1,0 +1,9 @@
+{
+    "name": "yliv-platform",
+    "version": "4.0.0",
+    "description": "Premium AI Livestreaming Platform",
+    "scripts": {
+        "deploy": "powershell -ExecutionPolicy Bypass -File ./outputs/deploy.ps1",
+        "deploy:sh": "bash ./outputs/deploy.sh"
+    }
+}
