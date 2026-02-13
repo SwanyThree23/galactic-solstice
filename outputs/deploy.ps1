@@ -6,19 +6,19 @@ Write-Host "==========================================" -ForegroundColor Cyan
 
 # 1. Setup Backend
 Write-Host "[1/4] Setting up Backend..." -ForegroundColor Yellow
-cd backend
+Set-Location backend
 npm install
 npm run prisma:generate
 npm run db:setup
 npm run build
-cd ..
+Set-Location ..
 
 # 2. Setup Frontend
 Write-Host "[2/4] Setting up Frontend..." -ForegroundColor Yellow
-cd frontend
+Set-Location frontend
 npm install
 npm run build
-cd ..
+Set-Location ..
 
 # 3. Launch Docker (Optional)
 Write-Host "[3/4] Launching Production Services..." -ForegroundColor Yellow
