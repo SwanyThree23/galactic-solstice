@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { streamService } from '../services/StreamService';
 import { aiService } from '../services/AIService';
+import { authMiddleware } from '../middleware/auth';
 
 const prisma = new (require('@prisma/client').PrismaClient)();
 const router = Router();
@@ -48,7 +49,7 @@ router.post('/:id/validate-access', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     try {
         const stream = await streamService.createStream(req.body.userId, req.body);
         res.status(201).json(stream);
@@ -57,7 +58,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/:id/metrics', async (req, res) => {
+router.get('/:id/metrics', authMiddleware, async (req, res) => {
     try {
         const metrics = await streamService.getStreamMetrics(req.params.id);
         res.json(metrics);
@@ -66,7 +67,7 @@ router.get('/:id/metrics', async (req, res) => {
     }
 });
 
-router.post('/:id/multi-stream', async (req, res) => {
+router.post('/:id/multi-stream', authMiddleware, async (req, res) => {
     try {
         await streamService.setupMultiStream(req.params.id, req.body.configs);
         res.status(200).json({ status: 'configured' });
@@ -75,7 +76,7 @@ router.post('/:id/multi-stream', async (req, res) => {
     }
 });
 
-router.post('/:id/ai-highlights', async (req, res) => {
+router.post('/:id/ai-highlights', authMiddleware, async (req, res) => {
     try {
         const highlights = await aiService.extractHighlights(req.params.id);
         res.json(highlights);
@@ -84,7 +85,7 @@ router.post('/:id/ai-highlights', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         await streamService.closeStream(req.params.id);
         res.status(204).send();
