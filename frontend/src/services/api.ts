@@ -41,14 +41,22 @@ export const userApi = {
 
 // ── Stream API ──
 export const streamApi = {
-    create: (data: { title: string; isPrivate?: boolean; accessCode?: string; paywallPrice?: number }) =>
-        api.post('/streams/create', data),
+    list: () =>
+        api.get('/streams'),
+    get: (id: string) =>
+        api.get(`/streams/${id}`),
+    create: (data: { userId: string; title: string; isPrivate?: boolean; accessCode?: string; paywallPrice?: number }) =>
+        api.post('/streams', data),
     getMetrics: (id: string) =>
         api.get(`/streams/${id}/metrics`),
     close: (id: string) =>
-        api.post(`/streams/${id}/close`),
+        api.delete(`/streams/${id}`),
+    validateAccess: (id: string, accessCode: string) =>
+        api.post(`/streams/${id}/validate-access`, { accessCode }),
     setupMultiStream: (id: string, configs: { platform: string; rtmpUrl: string; streamKey: string }[]) =>
-        api.post(`/streams/${id}/multistream`, { configs }),
+        api.post(`/streams/${id}/multi-stream`, { configs }),
+    getAIHighlights: (id: string) =>
+        api.post(`/streams/${id}/ai-highlights`),
 };
 
 // ── Payment API ──
@@ -64,7 +72,7 @@ export const paymentApi = {
 // ── Analytics API ──
 export const analyticsApi = {
     trackEvent: (entityType: string, entityId: string, metric: string, value: number) =>
-        api.post('/analytics/track', { entityType, entityId, metric, value }),
+        api.post('/analytics/track', { type: entityType, id: entityId, metric, value }),
     getStreamAnalytics: (streamId: string) =>
         api.get(`/analytics/stream/${streamId}`),
     getCreatorStats: (userId: string) =>
@@ -73,10 +81,12 @@ export const analyticsApi = {
 
 // ── AI API ──
 export const aiApi = {
+    query: (model: string, prompt: string) =>
+        api.post('/ai/query', { model, prompt }),
     orchestrateSwarm: (streamId: string) =>
         api.post(`/ai/swarm/${streamId}`),
-    getHighlights: (streamId: string) =>
-        api.get(`/ai/highlights/${streamId}`),
+    tts: (text: string) =>
+        api.post('/ai/tts', { text }),
 };
 
 // ── Video API ──
@@ -85,6 +95,50 @@ export const videoApi = {
         api.post('/videos/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
     autoClip: (streamId: string) =>
         api.post(`/videos/${streamId}/autoclip`),
+};
+
+// ── Chat API ──
+export const chatApi = {
+    aggregate: (streamId: string) =>
+        api.get(`/chat/aggregate/${streamId}`),
+    moderate: (streamId: string, messages: any[]) =>
+        api.post(`/chat/moderate/${streamId}`, { messages }),
+};
+
+// ── Share API ──
+export const shareApi = {
+    shareToInstagram: (contentId: string, contentType: string, userId: string) =>
+        api.post('/share/instagram', { contentId, contentType, userId }),
+    getEmbedUrl: (contentType: string, contentId: string) =>
+        api.get(`/share/embed/${contentType}/${contentId}`),
+    trackView: (contentId: string, platform: string) =>
+        api.post('/share/track-view', { contentId, platform }),
+    trackInstall: (shareId: string) =>
+        api.post(`/share/track-install/${shareId}`),
+};
+
+// ── Notification API ──
+export const notificationApi = {
+    getAll: (userId: string) =>
+        api.get(`/notifications/${userId}`),
+    create: (userId: string, title: string, message: string) =>
+        api.post('/notifications', { userId, title, message }),
+    markRead: (id: string) =>
+        api.patch(`/notifications/${id}/read`),
+    markAllRead: (userId: string) =>
+        api.patch(`/notifications/read-all/${userId}`),
+};
+
+// ── Wallet API ──
+export const walletApi = {
+    get: (userId: string) =>
+        api.get(`/wallet/${userId}`),
+    getBalance: (userId: string) =>
+        api.get(`/wallet/${userId}/balance`),
+    withdraw: (userId: string, amount: number) =>
+        api.post(`/wallet/${userId}/withdraw`, { amount }),
+    getHistory: (userId: string) =>
+        api.get(`/wallet/${userId}/history`),
 };
 
 export default api;

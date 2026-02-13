@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { paymentService } from '../services/PaymentService';
+import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router.post('/donate', async (req, res) => {
     }
 });
 
-router.get('/dashboard/:userId', async (req, res) => {
+router.get('/dashboard/:userId', authMiddleware, async (req, res) => {
     try {
         const dashboard = await paymentService.getEarningsDashboard(req.params.userId);
         res.json(dashboard);
@@ -22,7 +23,7 @@ router.get('/dashboard/:userId', async (req, res) => {
     }
 });
 
-router.post('/payout/:userId', async (req, res) => {
+router.post('/payout/:userId', authMiddleware, async (req, res) => {
     try {
         const { amount, method } = req.body;
         let success = false;

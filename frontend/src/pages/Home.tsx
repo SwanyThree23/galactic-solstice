@@ -1,62 +1,222 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Play, Zap, Shield, Heart } from 'lucide-react';
+import { Play, Zap, Shield, Heart, Radio, Users, Cpu, ArrowRight, Globe, DollarSign, Sparkles } from 'lucide-react';
 
 const Home: React.FC = () => {
+    const [viewerCount, setViewerCount] = useState(24819);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setViewerCount(prev => prev + Math.floor(Math.random() * 7 - 2));
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
-        <div className="relative min-h-screen flex flex-col items-center justify-center p-6 text-center overflow-hidden">
-            {/* Background Glow */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-600/20 blur-[120px] rounded-full" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-600/20 blur-[120px] rounded-full" />
+        <div className="relative min-h-screen overflow-hidden">
+            {/* Animated Background Orbs */}
+            <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-red-600/15 blur-[150px] rounded-full animate-pulse" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-orange-600/15 blur-[150px] rounded-full animate-pulse" />
+            <div className="absolute top-[40%] right-[20%] w-[20%] h-[20%] bg-purple-600/10 blur-[120px] rounded-full" />
 
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="z-10"
-            >
-                <h1 className="text-7xl md:text-9xl font-black mb-6 tracking-tighter brand">
-                    YLIV<span className="text-red-600">4.0</span>
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium">
-                    The next generation of live streaming. Zero latency. 90% creator revenue. AI-driven production.
-                </p>
+            {/* Hero Section */}
+            <section className="relative flex flex-col items-center justify-center min-h-screen p-6 text-center z-10">
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                >
+                    {/* Live Indicator */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/20 px-4 py-2 rounded-full mb-8"
+                    >
+                        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-red-500">{viewerCount.toLocaleString()} Creators Streaming Now</span>
+                    </motion.div>
 
-                <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-                    <Link to="/discover" className="btn-primary flex items-center gap-3 text-lg px-8 py-4">
-                        <Play fill="white" size={24} />
-                        START WATCHING
-                    </Link>
-                    <Link to="/studio" className="glass-morphism px-8 py-4 flex items-center gap-3 text-lg hover:bg-white/10 transition-all font-bold">
-                        <Zap className="text-orange-500" size={24} />
-                        GO LIVE NOW
-                    </Link>
-                </div>
-            </motion.div>
+                    <h1 className="text-7xl md:text-[10rem] font-black tracking-tighter brand leading-none">
+                        YLIV<span className="text-red-600">4.0</span>
+                    </h1>
 
-            <motion.div
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-lg md:text-2xl text-gray-400 mt-6 mb-14 max-w-2xl mx-auto font-medium leading-relaxed"
+                    >
+                        The next generation of live streaming.<br />
+                        <span className="text-white font-bold">Zero latency. 90% creator revenue. AI-driven production.</span>
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                    >
+                        <Link to="/discover" className="btn-primary flex items-center gap-3 text-lg px-10 py-5 rounded-2xl shadow-[0_0_60px_rgba(255,59,48,0.3)]">
+                            <Play fill="white" size={22} />
+                            START WATCHING
+                        </Link>
+                        <Link to="/studio" className="glass-morphism px-10 py-5 flex items-center gap-3 text-lg hover:bg-white/10 transition-all font-bold rounded-2xl group">
+                            <Zap className="text-orange-500 group-hover:rotate-12 transition-transform" size={22} />
+                            GO LIVE NOW
+                            <ArrowRight size={16} className="text-gray-500 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </motion.div>
+                </motion.div>
+            </section>
+
+            {/* Stats Bar */}
+            <motion.section
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 z-10"
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="relative z-10 border-y border-white/5 bg-[#0a0a0a]/60 backdrop-blur-xl"
             >
-                <Feature icon={<Zap className="text-red-500" />} label="20 Xeron Latency" />
-                <Feature icon={<Shield className="text-green-500" />} label="Direct Payouts" />
-                <Feature icon={<Heart className="text-pink-500" />} label="90% Split" />
-                <Feature icon={<Play className="text-blue-500" />} label="Multi-Stream" />
-            </motion.div>
+                <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <StatItem value="20" suffix="ms" label="Xeron Latency" />
+                    <StatItem value="90" suffix="%" label="Creator Revenue" />
+                    <StatItem value="9" suffix="+" label="Simultaneous Platforms" />
+                    <StatItem value="24" suffix="/7" label="AI Director Uptime" />
+                </div>
+            </motion.section>
+
+            {/* Feature Grid */}
+            <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-16"
+                >
+                    <h2 className="text-4xl md:text-5xl font-black brand tracking-tighter">
+                        Built for <span className="text-red-600">Creators</span>
+                    </h2>
+                    <p className="text-gray-500 mt-4 max-w-lg mx-auto font-medium">
+                        Every feature designed to maximize your reach, revenue, and production quality.
+                    </p>
+                </motion.div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <FeatureCard
+                        icon={<Radio className="text-red-500" size={28} />}
+                        title="Multi-Platform Streaming"
+                        desc="Stream to YouTube, Twitch, TikTok, Kick, Facebook, LinkedIn, Instagram, X, and custom RTMP — all at once."
+                        delay={0}
+                    />
+                    <FeatureCard
+                        icon={<Cpu className="text-orange-500" size={28} />}
+                        title="K2 AI Swarm Director"
+                        desc="AI agents that auto-switch scenes, moderate chat, extract highlights, and run TTS alerts in real-time."
+                        delay={0.1}
+                    />
+                    <FeatureCard
+                        icon={<Users className="text-blue-500" size={28} />}
+                        title="9+ Guest Grid"
+                        desc="Expandable video grid supporting up to 9 simultaneous guests with individual director controls."
+                        delay={0.2}
+                    />
+                    <FeatureCard
+                        icon={<DollarSign className="text-green-500" size={28} />}
+                        title="90/10 Revenue Split"
+                        desc="Industry-leading 90% creator revenue with instant payouts via CashApp, PayPal, and Venmo."
+                        delay={0.3}
+                    />
+                    <FeatureCard
+                        icon={<Shield className="text-purple-500" size={28} />}
+                        title="Private & Secure"
+                        desc="End-to-end encryption, private access codes, and AI-powered content safety moderation."
+                        delay={0.4}
+                    />
+                    <FeatureCard
+                        icon={<Sparkles className="text-yellow-500" size={28} />}
+                        title="Auto AI Clipping"
+                        desc="K2 Swarm automatically detects viral moments and generates shareable vertical clips for social."
+                        delay={0.5}
+                    />
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="relative z-10 py-24 px-6">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    className="max-w-4xl mx-auto text-center bg-gradient-to-r from-red-600/10 to-orange-600/10 border border-white/5 rounded-[3rem] p-16 relative overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+                    <div className="relative z-10">
+                        <Globe className="text-red-600 mx-auto mb-6" size={48} />
+                        <h2 className="text-4xl md:text-5xl font-black brand tracking-tighter mb-4">
+                            Ready to <span className="text-red-600">Go Live</span>?
+                        </h2>
+                        <p className="text-gray-400 max-w-lg mx-auto mb-10 font-medium">
+                            Join thousands of creators already streaming on the most advanced platform ever built.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link to="/register" className="btn-primary text-lg px-10 py-5 rounded-2xl shadow-[0_0_60px_rgba(255,59,48,0.3)]">
+                                CREATE FREE ACCOUNT
+                            </Link>
+                            <Link to="/discover" className="glass-morphism px-10 py-5 text-lg hover:bg-white/10 transition-all font-bold rounded-2xl flex items-center gap-2">
+                                <Heart size={18} className="text-red-500" />
+                                BROWSE STREAMS
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* Footer */}
+            <footer className="relative z-10 border-t border-white/5 py-12 px-6">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-gray-600 text-xs font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-2">
+                        <span className="text-red-600 text-lg font-black brand">YLIV</span>
+                        <span>4.0</span>
+                        <span className="text-gray-800">|</span>
+                        <span>SeeWhy LIVE</span>
+                    </div>
+                    <div className="flex gap-8">
+                        <span className="hover:text-white transition-colors cursor-pointer">Terms</span>
+                        <span className="hover:text-white transition-colors cursor-pointer">Privacy</span>
+                        <span className="hover:text-white transition-colors cursor-pointer">Creators</span>
+                        <span className="hover:text-white transition-colors cursor-pointer">API</span>
+                    </div>
+                    <p>© 2026 YLIV Inc.</p>
+                </div>
+            </footer>
         </div>
     );
 };
 
-const Feature = ({ icon, label }: any) => (
-    <div className="flex flex-col items-center gap-2">
-        <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+const StatItem = ({ value, suffix, label }: any) => (
+    <div className="text-center">
+        <p className="text-3xl md:text-4xl font-black brand">
+            {value}<span className="text-red-600">{suffix}</span>
+        </p>
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">{label}</p>
+    </div>
+);
+
+const FeatureCard = ({ icon, title, desc, delay = 0 }: any) => (
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay, duration: 0.5 }}
+        className="glass-morphism p-8 hover:bg-white/[0.04] transition-all group cursor-default"
+    >
+        <div className="mb-4 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform">
             {icon}
         </div>
-        <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{label}</span>
-    </div>
+        <h3 className="text-lg font-bold mb-2 group-hover:text-red-600 transition-colors">{title}</h3>
+        <p className="text-gray-500 text-sm font-medium leading-relaxed">{desc}</p>
+    </motion.div>
 );
 
 export default Home;
