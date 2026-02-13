@@ -16,6 +16,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     register: (username: string, email: string, password: string) => Promise<void>;
     logout: () => void;
+    setUser: (user: User | null) => void;
     loading: boolean;
     error: string | null;
 }
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
     login: async () => { },
     register: async () => { },
     logout: () => { },
+    setUser: () => { },
     loading: false,
     error: null,
 });
@@ -44,22 +46,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Rehydrate user from token on mount
+    // Rehydrate user from token on mount and fetch latest profile
     useEffect(() => {
-        if (token && !user) {
-            // Try to decode the JWT payload to get basic user info
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                if (payload.id) {
-                    setUser({ id: payload.id, username: payload.username || 'User', isCreator: payload.isCreator });
+        const fetchMe = async () => {
+            if (token) {
+                try {
+                    const res = await userApi.getMe();
+                    setUser(res.data);
+                    localStorage.setItem('yliv_user', JSON.stringify(res.data));
+                } catch (err) {
+                    console.error('Failed to rehydrate session', err);
+                    // If 401/403, the api interceptor will handle redirect
                 }
-            } catch {
-                // Token is malformed, clear it
-                setToken(null);
-                localStorage.removeItem('yliv_token');
             }
-        }
-    }, []);
+        };
+        fetchMe();
+    }, [token]);
 
     const login = async (email: string, password: string) => {
         setLoading(true);
@@ -103,7 +105,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, register, logout, loading, error }}>
+        <AuthContext.Provider value={{
+            user,
+            token,
+            isAuthenticated: !!token,
+            login,
+            register,
+            logout,
+            setUser,
+            loading,
+            error
+        }}>
             {children}
         </AuthContext.Provider>
     );

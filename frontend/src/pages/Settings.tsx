@@ -1,6 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { Settings as SettingsIcon, Bell, Shield, Wallet, Monitor, Globe, User, Check, AlertTriangle, Zap, Radio, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { userApi } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 
 const Settings: React.FC = () => {
     const [activeSection, setActiveSection] = useState('Production');
@@ -119,18 +122,58 @@ const FinancialSettings: React.FC = () => (
 
 // ── Profile Settings ──
 const ProfileSettings: React.FC = () => {
-    const [bio, setBio] = useState('Streaming the future of YLIV 4.0. 🚀');
+    const { user, setUser }: any = useAuth();
+    const { success, error: toastError } = useToast();
+    const [name, setName] = useState(user?.username || 'AlexLivo');
+    const [bio, setBio] = useState(user?.bio || 'Streaming the future of YLIV 4.0. 🚀');
+    const [loading, setLoading] = useState(false);
+
+    const handleSave = async () => {
+        if (!user?.id) return;
+        setLoading(true);
+        try {
+            const res = await userApi.updateProfile(user.id, { username: name, bio });
+            setUser(res.data);
+            localStorage.setItem('yliv_user', JSON.stringify(res.data));
+            success('Profile updated successfully!');
+        } catch (err: any) {
+            toastError('Failed to update profile');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div>
                 <label htmlFor="settings-display-name" className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-2">Display Name</label>
-                <input id="settings-display-name" type="text" defaultValue="AlexLivo" placeholder="Your display name" className="w-full bg-black border border-white/5 rounded-2xl py-4 px-5 text-sm focus:border-red-600/50 outline-none" />
+                <input
+                    id="settings-display-name"
+                    type="text"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Your display name"
+                    className="w-full bg-black border border-white/5 rounded-2xl py-4 px-5 text-sm focus:border-red-600/50 outline-none"
+                />
             </div>
             <div>
                 <label htmlFor="settings-bio" className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-2">Bio</label>
-                <textarea id="settings-bio" value={bio} onChange={e => setBio(e.target.value)} rows={3} placeholder="Tell viewers about yourself" className="w-full bg-black border border-white/5 rounded-2xl py-4 px-5 text-sm focus:border-red-600/50 outline-none resize-none" />
+                <textarea
+                    id="settings-bio"
+                    value={bio}
+                    onChange={e => setBio(e.target.value)}
+                    rows={3}
+                    placeholder="Tell viewers about yourself"
+                    className="w-full bg-black border border-white/5 rounded-2xl py-4 px-5 text-sm focus:border-red-600/50 outline-none resize-none"
+                />
             </div>
-            <button className="btn-primary px-8 py-3">Save Changes</button>
+            <button
+                onClick={handleSave}
+                disabled={loading}
+                className="btn-primary px-8 py-3 disabled:opacity-50"
+            >
+                {loading ? 'Saving...' : 'Save Changes'}
+            </button>
         </div>
     );
 };
