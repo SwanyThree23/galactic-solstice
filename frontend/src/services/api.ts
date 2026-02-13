@@ -37,6 +37,10 @@ export const userApi = {
         api.get(`/users/profile/${id}`),
     getVideos: (id: string) =>
         api.get(`/users/${id}/videos`),
+    getMe: () =>
+        api.get('/users/me'),
+    updateProfile: (id: string, data: any) =>
+        api.patch(`/users/profile/${id}`, data),
 };
 
 // ── Stream API ──
