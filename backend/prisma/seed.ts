@@ -18,8 +18,7 @@ async function seed() {
             password: passwordHash,
             isCreator: true,
             bio: 'Streaming the future of YLIV 4.0. 🚀',
-            totalRevenue: 2400,
-            verified: true,
+            revenue: 2400,
         },
     });
 
@@ -38,51 +37,38 @@ async function seed() {
     console.log(`  ✅ Users: ${alex.username}, ${viewer.username}`);
 
     // ── Streams ──
+    // Note: Stream requires a unique streamKey
     const streams = await Promise.all([
         prisma.stream.upsert({
-            where: { id: 'stream-001' },
+            where: { streamKey: 'sk_live_001' },
             update: {},
             create: {
                 id: 'stream-001',
                 title: 'Elite Strategy Session: YLIV 4.0 Pro',
                 description: 'Full capabilities demo of the SeeWhy LIVE platform with 9+ guests and AI director swarm.',
                 userId: alex.id,
-                status: 'live',
+                isLive: true,
                 isPrivate: false,
-                viewerCount: 2400,
+                viewCount: 2400,
+                streamKey: 'sk_live_001',
                 rtmpUrl: 'rtmp://ingest.seewhy.live/live/stream-001',
                 pushUrl: 'https://vdo.ninja?push=stream-001',
             },
         }),
         prisma.stream.upsert({
-            where: { id: 'stream-002' },
+            where: { streamKey: 'sk_live_002' },
             update: {},
             create: {
                 id: 'stream-002',
                 title: 'Music Production — Late Night Beats',
                 description: 'Creating beats live, taking viewer song requests. Low-key vibes only.',
                 userId: alex.id,
-                status: 'ended',
+                isLive: false,
                 isPrivate: false,
-                viewerCount: 890,
+                viewCount: 890,
+                streamKey: 'sk_live_002',
                 rtmpUrl: 'rtmp://ingest.seewhy.live/live/stream-002',
                 pushUrl: 'https://vdo.ninja?push=stream-002',
-            },
-        }),
-        prisma.stream.upsert({
-            where: { id: 'stream-003' },
-            update: {},
-            create: {
-                id: 'stream-003',
-                title: 'Private Subscriber Stream — VIP Only',
-                description: 'Exclusive content for VIP subscribers.',
-                userId: alex.id,
-                status: 'scheduled',
-                isPrivate: true,
-                accessCode: 'VIP-2026',
-                viewerCount: 0,
-                rtmpUrl: 'rtmp://ingest.seewhy.live/live/stream-003',
-                pushUrl: 'https://vdo.ninja?push=stream-003',
             },
         }),
     ]);
@@ -96,8 +82,7 @@ async function seed() {
         create: {
             userId: alex.id,
             balance: 2160,
-            totalEarned: 2400,
-            totalWithdrawn: 240,
+            currency: 'USD',
         },
     });
 
@@ -110,7 +95,7 @@ async function seed() {
                 userId: alex.id,
                 title: 'New Follower',
                 message: 'Viewer_1 started following you.',
-                read: false,
+                isRead: false,
             },
         }),
         prisma.notification.create({
@@ -118,7 +103,7 @@ async function seed() {
                 userId: alex.id,
                 title: 'Donation Received',
                 message: 'Someone sent you $25.00 via CashApp.',
-                read: false,
+                isRead: false,
             },
         }),
         prisma.notification.create({
@@ -126,15 +111,7 @@ async function seed() {
                 userId: alex.id,
                 title: 'Stream Performance',
                 message: 'Your last stream hit 2.4K peak viewers — a new record!',
-                read: true,
-            },
-        }),
-        prisma.notification.create({
-            data: {
-                userId: alex.id,
-                title: 'AI Director Report',
-                message: 'K2 Swarm auto-switched scenes 14 times during your last stream.',
-                read: true,
+                isRead: true,
             },
         }),
     ]);
@@ -142,11 +119,11 @@ async function seed() {
     console.log(`  ✅ Notifications: ${notifications.length} created`);
 
     // ── Donations ──
+    // Note: Schema uses 'amount' and relation fields 'sender'/'receiver'
     const donations = await Promise.all([
         prisma.donation.create({
             data: {
                 amount: 25.0,
-                method: 'cashapp',
                 senderId: viewer.id,
                 receiverId: alex.id,
                 streamId: streams[0].id,
@@ -155,7 +132,6 @@ async function seed() {
         prisma.donation.create({
             data: {
                 amount: 10.0,
-                method: 'paypal',
                 senderId: viewer.id,
                 receiverId: alex.id,
                 streamId: streams[0].id,
@@ -169,16 +145,18 @@ async function seed() {
     await Promise.all([
         prisma.analyticRecord.create({
             data: {
-                type: 'stream_view',
-                data: JSON.stringify({ streamId: streams[0].id, viewers: 2400, peakViewers: 2847, avgWatchTime: 262 }),
-                userId: alex.id,
+                entityType: 'stream',
+                entityId: streams[0].id,
+                metric: 'view',
+                value: 2400,
             },
         }),
         prisma.analyticRecord.create({
             data: {
-                type: 'stream_view',
-                data: JSON.stringify({ streamId: streams[1].id, viewers: 890, peakViewers: 1100, avgWatchTime: 185 }),
-                userId: alex.id,
+                entityType: 'stream',
+                entityId: streams[1].id,
+                metric: 'view',
+                value: 890,
             },
         }),
     ]);
