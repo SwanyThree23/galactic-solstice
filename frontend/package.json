@@ -1,6 +1,8 @@
 {
     "name": "yliv-frontend",
     "version": "4.0.0",
+    "description": "Premium Streaming Frontend",
+    "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
