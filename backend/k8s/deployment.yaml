@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yliv-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: yliv-backend
+  template:
+    metadata:
+      labels:
+        app: yliv-backend
+    spec:
+      containers:
+      - name: backend
+        image: yliv-backend:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: yliv-secrets
+              key: database-url
