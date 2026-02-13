@@ -1,0 +1,104 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const client_1 = require("@prisma/client");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const auth_1 = require("../middleware/auth");
+const router = (0, express_1.Router)();
+const prisma = new client_1.PrismaClient();
+// Get user profile
+router.get('/profile/:id', async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.params.id },
+            select: {
+                id: true, username: true, avatar: true, bio: true,
+                isCreator: true, revenue: true, walletAddress: true, createdAt: true,
+                _count: { select: { streams: true, videos: true, donations: true } }
+            }
+        });
+        if (!user)
+            return res.status(404).json({ error: 'User not found' });
+        res.json(user);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// Get current user (me)
+router.get('/me', auth_1.authMiddleware, async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.id }
+        });
+        if (!user)
+            return res.status(404).json({ error: 'User not found' });
+        const { password, ...safeUser } = user;
+        res.json(safeUser);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// Update profile
+router.patch('/profile/:id', auth_1.authMiddleware, async (req, res) => {
+    if (req.user.id !== req.params.id) {
+        return res.status(403).json({ error: 'Unauthorized to update this profile' });
+    }
+    try {
+        const { username, bio, avatar, isCreator } = req.body;
+        const user = await prisma.user.update({
+            where: { id: req.params.id },
+            data: { username, bio, avatar, isCreator }
+        });
+        const { password, ...safeUser } = user;
+        res.json(safeUser);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// Get user's videos
+router.get('/:id/videos', async (req, res) => {
+    try {
+        const videos = await prisma.video.findMany({
+            where: { userId: req.params.id },
+            orderBy: { createdAt: 'desc' },
+            take: 20
+        });
+        res.json(videos);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+router.post('/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    const hashedPassword = await bcryptjs_1.default.hash(password, 10);
+    try {
+        const user = await prisma.user.create({
+            data: { username, email, password: hashedPassword }
+        });
+        res.status(201).json({ id: user.id, username: user.username });
+    }
+    catch (e) {
+        res.status(400).json({ error: 'Username or email already exists' });
+    }
+});
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user && await bcryptjs_1.default.compare(password, user.password)) {
+        const token = jsonwebtoken_1.default.sign({ id: user.id, username: user.username, isCreator: user.isCreator }, process.env.JWT_SECRET || 'yliv_secret', { expiresIn: '7d' });
+        const { password: _, ...userData } = user;
+        res.json({ token, user: userData });
+    }
+    else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+exports.default = router;

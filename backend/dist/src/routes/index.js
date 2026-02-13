@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const streamRoutes_1 = __importDefault(require("./streamRoutes"));
+const userRoutes_1 = __importDefault(require("./userRoutes"));
+const paymentRoutes_1 = __importDefault(require("./paymentRoutes"));
+const videoRoutes_1 = __importDefault(require("./videoRoutes"));
+const analyticsRoutes_1 = __importDefault(require("./analyticsRoutes"));
+const aiRoutes_1 = __importDefault(require("./aiRoutes"));
+const chatRoutes_1 = __importDefault(require("./chatRoutes"));
+const shareRoutes_1 = __importDefault(require("./shareRoutes"));
+const notificationRoutes_1 = __importDefault(require("./notificationRoutes"));
+const walletRoutes_1 = __importDefault(require("./walletRoutes"));
+const router = (0, express_1.Router)();
+router.use('/streams', streamRoutes_1.default);
+router.use('/users', userRoutes_1.default);
+router.use('/payments', paymentRoutes_1.default);
+router.use('/videos', videoRoutes_1.default);
+router.use('/analytics', analyticsRoutes_1.default);
+router.use('/ai', aiRoutes_1.default);
+router.use('/chat', chatRoutes_1.default);
+router.use('/share', shareRoutes_1.default);
+router.use('/notifications', notificationRoutes_1.default);
+router.use('/wallet', walletRoutes_1.default);
+exports.default = router;
