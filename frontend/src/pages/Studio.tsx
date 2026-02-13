@@ -54,6 +54,16 @@ const Studio: React.FC = () => {
         }
     };
 
+    const handleFinishStream = async () => {
+        try {
+            await streamApi.close(streamId);
+            setIsLive(false);
+            success('Stream closed successfully. VOD processing...');
+        } catch {
+            toastError('Failed to close stream');
+        }
+    };
+
     const toggleLive = () => setIsLive(!isLive);
 
     return (
@@ -163,6 +173,7 @@ const Studio: React.FC = () => {
                                     guests={guests}
                                     onMute={handleMuteGuest}
                                     onRemove={handleRemoveGuest}
+                                    onFinish={handleFinishStream}
                                 />
                             </motion.div>
                         ) : activeTab === 'ai' ? (
