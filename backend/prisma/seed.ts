@@ -40,7 +40,7 @@ async function seed() {
     // Note: Stream requires a unique streamKey
     const streams = await Promise.all([
         prisma.stream.upsert({
-            where: { streamKey: 'sk_live_001' },
+            where: { streamKey: 'stream_key_001' },
             update: {},
             create: {
                 id: 'stream-001',
@@ -50,13 +50,13 @@ async function seed() {
                 isLive: true,
                 isPrivate: false,
                 viewCount: 2400,
-                streamKey: 'sk_live_001',
+                streamKey: 'stream_key_001',
                 rtmpUrl: 'rtmp://ingest.seewhy.live/live/stream-001',
                 pushUrl: 'https://vdo.ninja?push=stream-001',
             },
         }),
         prisma.stream.upsert({
-            where: { streamKey: 'sk_live_002' },
+            where: { streamKey: 'stream_key_002' },
             update: {},
             create: {
                 id: 'stream-002',
@@ -66,7 +66,7 @@ async function seed() {
                 isLive: false,
                 isPrivate: false,
                 viewCount: 890,
-                streamKey: 'sk_live_002',
+                streamKey: 'stream_key_002',
                 rtmpUrl: 'rtmp://ingest.seewhy.live/live/stream-002',
                 pushUrl: 'https://vdo.ninja?push=stream-002',
             },
