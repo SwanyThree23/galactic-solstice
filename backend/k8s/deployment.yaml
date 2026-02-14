@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: yliv-backend
+  name: seewhy-backend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: yliv-backend
+      app: seewhy-backend
   template:
     metadata:
       labels:
-        app: yliv-backend
+        app: seewhy-backend
     spec:
       containers:
       - name: backend
-        image: yliv-backend:latest
+        image: seewhy-backend:latest
         ports:
         - containerPort: 4000
         env:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: yliv-secrets
+              name: seewhy-secrets
               key: database-url

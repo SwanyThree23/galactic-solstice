@@ -93,7 +93,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if (user && await bcryptjs_1.default.compare(password, user.password)) {
-        const token = jsonwebtoken_1.default.sign({ id: user.id, username: user.username, isCreator: user.isCreator }, process.env.JWT_SECRET || 'yliv_secret', { expiresIn: '7d' });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, username: user.username, isCreator: user.isCreator }, process.env.JWT_SECRET || 'seewhy_secret', { expiresIn: '7d' });
         const { password: _, ...userData } = user;
         res.json({ token, user: userData });
     }

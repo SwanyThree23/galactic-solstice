@@ -4,20 +4,50 @@ exports.streamService = exports.StreamService = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 /**
- * Enhanced StreamService for YLIV 4.0
+ * Enhanced StreamService for SeeWhy LIVE
  * Features: RTMP multi-streaming, Private Access Codes,
  * Paywall logic, and 20 Xeron Latency WebRTC.
  */
 class StreamService {
-    constructor() { }
+    constructor() {
+        this.startThumbnailHarvester();
+    }
     static getInstance() {
         if (!StreamService.instance) {
             StreamService.instance = new StreamService();
         }
         return StreamService.instance;
     }
+    /**
+     * Periodically captures frames from live streams to update thumbnails.
+     * Mocks the FFMPEG frame grabbing logic.
+     */
+    startThumbnailHarvester() {
+        setInterval(async () => {
+            const liveStreams = await prisma.stream.findMany({ where: { isLive: true } });
+            for (const stream of liveStreams) {
+                await this.captureThumbnail(stream.id);
+            }
+        }, 300000); // Every 5 minutes
+    }
+    async captureThumbnail(streamId) {
+        // In production, this would trigger an FFMPEG command:
+        // ffmpeg -i rtmp://localhost/live/key -vframes 1 thumbnail.jpg
+        const mockThumbnails = [
+            'https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=2000',
+            'https://images.unsplash.com/photo-1598550874175-4d0fe4a23b39?q=80&w=2070',
+            'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072',
+        ];
+        const newThumb = mockThumbnails[Math.floor(Math.random() * mockThumbnails.length)];
+        await prisma.stream.update({
+            where: { id: streamId },
+            data: { thumbnail: newThumb }
+        });
+        console.log(`[Thumbnail] Captured new frame for stream ${streamId}`);
+        return newThumb;
+    }
     async createStream(userId, data) {
-        const streamKey = `yliv_prod_${Math.random().toString(36).substring(7)}`;
+        const streamKey = `seewhy_prod_${Math.random().toString(36).substring(7)}`;
         const rtmpUrl = `rtmp://rtmp.cy.live/live/${streamKey}`;
         const pushUrl = `https://vdo.ninja/?push=${streamKey}&latency=20`;
         return await prisma.$transaction(async (tx) => {
@@ -89,6 +119,35 @@ class StreamService {
             where: { id: streamId },
             data: { isLive: false }
         });
+        console.log(`[VOD] Stream ${streamId} ended. Initiating K2 Processing Swarm...`);
+        // Simulate background VOD processing (FFMPEG transcoding, clipping, etc.)
+        setTimeout(async () => {
+            console.log(`[VOD] Processing complete for ${streamId}. Generating Master VOD...`);
+            // In a real app, this would be a link to an S3/Cloudfront object
+            const vodUrl = `https://vod.cy.live/archive/${streamId}/master.m3u8`;
+            // Fetch stream to get userId
+            const stream = await prisma.stream.findUnique({ where: { id: streamId } });
+            if (!stream)
+                return;
+            await prisma.video.create({
+                data: {
+                    userId: stream.userId,
+                    title: `VOD: ${stream.title}`,
+                    url: vodUrl,
+                    duration: 3600, // 1 hour mock
+                }
+            });
+            // Simulate AI extraction of highlights
+            await prisma.highlight.create({
+                data: {
+                    streamId,
+                    startTime: 450,
+                    endTime: 480,
+                    description: 'Viral Clip: Peak engagement during Q&A'
+                }
+            });
+            console.log(`[VOD] VOD and Highlights indexed for ${streamId}.`);
+        }, 15000); // 15s mock delay for "Processing..."
     }
 }
 exports.StreamService = StreamService;

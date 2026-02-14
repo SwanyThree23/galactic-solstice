@@ -1,7 +1,8 @@
 {
-    "name": "yliv-platform",
+
+    "name": "seewhy-live-platform",
     "version": "4.0.0",
-    "description": "Premium AI Livestreaming Platform",
+    "description": "SeeWhy LIVE by SWANYTHREE EnTech — Premium AI Livestreaming Platform",
     "scripts": {
         "deploy": "powershell -ExecutionPolicy Bypass -File ./outputs/deploy.ps1",
         "deploy:sh": "bash ./outputs/deploy.sh"

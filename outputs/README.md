@@ -1,8 +1,8 @@
-# YLIV 4.0 | SeeWhy LIVE Production Guide
+# SeeWhy LIVE by SWANYTHREE EnTech Production Guide
 
-**The Ultimate Full-Stack Streaming Platform Core**
+## The Ultimate Full-Stack Streaming Platform Core
 
-Welcome to the production documentation for YLIV 4.0 (SeeWhy LIVE). This guide covers every aspect of the platform's infrastructure, services, and UI/UX architecture.
+Welcome to the production documentation for SeeWhy LIVE by SWANYTHREE EnTech. This guide covers every aspect of the platform's infrastructure, services, and UI/UX architecture.
 
 ---
 
@@ -44,7 +44,7 @@ Welcome to the production documentation for YLIV 4.0 (SeeWhy LIVE). This guide c
 
 ## 1. System Architecture
 
-YLIV 4.0 is designed as a distributed reactive system.
+SeeWhy LIVE is designed as a distributed reactive system.
 
 - **Ingest Layer**: Handles High-bitrate RTMP and low-latency WebRTC.
 - **Signal Layer**: Socket.IO for real-time director commands and chat.
@@ -81,8 +81,8 @@ The platform is powered by an AI "Director" swarm.
 
 ```bash
 # 1. Clone & Init
-git clone https://cy.live/yliv-4-0
-cd yliv-4-0
+git clone https://cy.live/seewhy-live
+cd seewhy-live
 
 # 2. Database Setup
 # Use the schema in /outputs/schema_production.sql

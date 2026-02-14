@@ -20,7 +20,7 @@ app.use('/uploads', express_1.default.static('uploads'));
 // Health Check (Production Monitoring)
 app.get('/', (req, res) => {
     res.json({
-        platform: 'YLIV 4.0 | SeeWhy LIVE',
+        platform: 'SeeWhy LIVE by SWANYTHREE EnTech',
         status: 'PRODUCTION READY',
         version: '4.0.1',
         uptime: process.uptime(),

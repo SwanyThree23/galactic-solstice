@@ -20,7 +20,7 @@ const Profile: React.FC = () => {
     const [showUpload, setShowUpload] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData>({
         username: user?.username || 'AlexLivo',
-        bio: 'Streaming the future of YLIV 4.0. 🚀',
+        bio: 'Streaming the future of SeeWhy LIVE. 🚀',
         streams: 142,
         followers: '12.4K',
         joined: 'Jan 2026',

@@ -21,7 +21,7 @@ const Settings: React.FC = () => {
         <div className="p-8 max-w-6xl mx-auto text-white">
             <header className="mb-12">
                 <h2 className="text-4xl font-black brand italic tracking-tighter uppercase">Studio <span className="text-red-600">Preferences</span></h2>
-                <p className="text-gray-500 font-medium mt-1">Configure your YLIV 4.0 production environment.</p>
+                <p className="text-gray-500 font-medium mt-1">Configure your SeeWhy LIVE production environment.</p>
             </header>
 
             <div className="flex gap-12">
@@ -65,7 +65,7 @@ const Settings: React.FC = () => {
 
 // ── Production Settings ──
 const ProductionSettings: React.FC = () => {
-    const storageKey = 'yliv_settings_production';
+    const storageKey = 'seewhy_settings_production';
     const defaults = { lowLatency: true, aiClipping: true, multiStream: false, aiDirector: true, autoRecord: false };
     const [settings, setSettings] = useState(() => {
         try { return { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') }; }
@@ -125,7 +125,7 @@ const ProfileSettings: React.FC = () => {
     const { user, setUser }: any = useAuth();
     const { success, error: toastError } = useToast();
     const [name, setName] = useState(user?.username || 'AlexLivo');
-    const [bio, setBio] = useState(user?.bio || 'Streaming the future of YLIV 4.0. 🚀');
+    const [bio, setBio] = useState(user?.bio || 'Streaming the future of SeeWhy LIVE. 🚀');
     const [loading, setLoading] = useState(false);
 
     const handleSave = async () => {
@@ -134,7 +134,7 @@ const ProfileSettings: React.FC = () => {
         try {
             const res = await userApi.updateProfile(user.id, { username: name, bio });
             setUser(res.data);
-            localStorage.setItem('yliv_user', JSON.stringify(res.data));
+            localStorage.setItem('seewhy_user', JSON.stringify(res.data));
             success('Profile updated successfully!');
         } catch (err: any) {
             toastError('Failed to update profile');
@@ -180,7 +180,7 @@ const ProfileSettings: React.FC = () => {
 
 // ── Security Settings ──
 const SecuritySettings: React.FC = () => {
-    const storageKey = 'yliv_settings_security';
+    const storageKey = 'seewhy_settings_security';
     const defaults = { twoFactor: false, loginAlerts: true };
     const [settings, setSettings] = useState(() => {
         try { return { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') }; }
@@ -207,7 +207,7 @@ const SecuritySettings: React.FC = () => {
 
 // ── Notification Settings ──
 const NotificationSettings: React.FC = () => {
-    const storageKey = 'yliv_settings_notifications';
+    const storageKey = 'seewhy_settings_notifications';
     const defaults = { donations: true, followers: true, streamAlerts: true, aiAlerts: false };
     const [settings, setSettings] = useState(() => {
         try { return { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || '{}') }; }

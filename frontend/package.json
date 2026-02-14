@@ -1,7 +1,7 @@
 {
-    "name": "yliv-frontend",
+    "name": "seewhy-frontend",
     "version": "4.0.0",
-    "description": "Premium Streaming Frontend",
+    "description": "SeeWhy LIVE Premium Streaming Frontend",
     "type": "module",
     "scripts": {
         "dev": "vite",

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Play, Zap, Shield, Heart, Radio, Users, Cpu, ArrowRight, Globe, DollarSign, Sparkles } from 'lucide-react';
+import LivePreviewCard from '../components/LivePreviewCard';
 
 const Home: React.FC = () => {
     const [viewerCount, setViewerCount] = useState(24819);
@@ -38,8 +39,9 @@ const Home: React.FC = () => {
                         <span className="text-xs font-bold uppercase tracking-[0.2em] text-red-500">{viewerCount.toLocaleString()} Creators Streaming Now</span>
                     </motion.div>
 
-                    <h1 className="text-7xl md:text-[10rem] font-black tracking-tighter brand leading-none">
-                        YLIV<span className="text-red-600">4.0</span>
+                    <h1 className="text-7xl md:text-[8rem] font-black tracking-tighter brand leading-none">
+                        SeeWhy <span className="text-red-600">LIVE</span>
+                        <div className="text-xl md:text-2xl text-gray-500 tracking-[0.3em] font-medium mt-4">by SWANYTHREE EnTech</div>
                     </h1>
 
                     <motion.p
@@ -85,6 +87,28 @@ const Home: React.FC = () => {
                     <StatItem value="24" suffix="/7" label="AI Director Uptime" />
                 </div>
             </motion.section>
+
+            {/* Trending Previews */}
+            <section className="relative z-10 py-24 px-6 overflow-hidden">
+                <div className="max-w-6xl mx-auto">
+                    <div className="flex items-center justify-between mb-12">
+                        <div>
+                            <h2 className="text-4xl font-black brand tracking-tighter uppercase italic">Trending <span className="text-red-600">Now</span></h2>
+                            <p className="text-gray-500 font-medium mt-1 uppercase text-[10px] tracking-widest">Real-time live previews from SeeWhy creators</p>
+                        </div>
+                        <Link to="/discover" className="text-xs font-black text-red-600 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2 group">
+                            Explore All <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+
+                    <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide no-scrollbar -mx-6 px-6">
+                        <LivePreviewCard stream={{ id: '1', title: 'Late Night Production Studio — 9 Guest Grid', username: 'AlexLivo', viewCount: 12400 }} />
+                        <LivePreviewCard stream={{ id: '2', title: 'Why 20 Xeron Latency Changes Everything', username: 'TechWiz', viewCount: 45200 }} />
+                        <LivePreviewCard stream={{ id: '3', title: 'Elite 9-Guest Lobby Battle Royale', username: 'SeeWhyGamer', viewCount: 1245000 }} />
+                        <LivePreviewCard stream={{ id: '4', title: 'Producer Breakdown: Multi-Platform RTMP', username: 'StreamPro', viewCount: 8900 }} />
+                    </div>
+                </div>
+            </section>
 
             {/* Feature Grid */}
             <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
@@ -176,10 +200,9 @@ const Home: React.FC = () => {
             <footer className="relative z-10 border-t border-white/5 py-12 px-6">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-gray-600 text-xs font-bold uppercase tracking-widest">
                     <div className="flex items-center gap-2">
-                        <span className="text-red-600 text-lg font-black brand">YLIV</span>
-                        <span>4.0</span>
+                        <span className="text-red-600 text-lg font-black brand">SeeWhy LIVE</span>
                         <span className="text-gray-800">|</span>
-                        <span>SeeWhy LIVE</span>
+                        <span>by SWANYTHREE EnTech</span>
                     </div>
                     <div className="flex gap-8">
                         <span className="hover:text-white transition-colors cursor-pointer">Terms</span>
@@ -187,7 +210,7 @@ const Home: React.FC = () => {
                         <span className="hover:text-white transition-colors cursor-pointer">Creators</span>
                         <span className="hover:text-white transition-colors cursor-pointer">API</span>
                     </div>
-                    <p>© 2026 YLIV Inc.</p>
+                    <p>© 2026 SWANYTHREE EnTech</p>
                 </div>
             </footer>
         </div>

@@ -25,8 +25,8 @@ const Navbar: React.FC = () => {
         <>
             {/* Desktop Sidebar */}
             <nav className="hidden md:flex fixed top-0 left-0 h-screen w-20 flex-col items-center py-8 bg-[#0a0a0a]/90 border-r border-white/5 z-50 gap-2" role="navigation" aria-label="Main navigation">
-                <Link to="/" className="mb-8" aria-label="YLIV Home">
-                    <span className="text-2xl font-black text-red-600 brand">Y</span>
+                <Link to="/" className="mb-8" aria-label="SeeWhy Home">
+                    <span className="text-2xl font-black text-red-600 brand">CY</span>
                 </Link>
 
                 <div className="flex flex-col gap-1 flex-grow">

@@ -13,6 +13,9 @@ export class SocketService {
         });
 
         this.setupHandlers();
+
+        // Connect AI Service to the broadcast engine
+        aiService.setBroadcaster(this.broadcastToStream.bind(this));
     }
 
     private setupHandlers() {
@@ -44,8 +47,19 @@ export class SocketService {
             });
 
             // Real-time Chat
-            socket.on('send_message', (data) => {
-                this.io.to(`stream_${data.streamId}`).emit('receive_message', data);
+            socket.on('send_message', async (data) => {
+                const isSafe = await aiService.moderateMessage(data.streamId, socket.id, data.text);
+
+                if (isSafe) {
+                    this.io.to(`stream_${data.streamId}`).emit('receive_message', data);
+                } else {
+                    socket.emit('receive_message', {
+                        id: 'system',
+                        user: 'K2 Moderator',
+                        text: '⚠️ Your message was flagged as unsafe by the AI Director.',
+                        isSystem: true
+                    });
+                }
             });
 
             // Payment Notifications
@@ -61,5 +75,9 @@ export class SocketService {
 
     public emitAnalyticsUpdate(streamId: string, metrics: any) {
         this.io.to(`stream_${streamId}`).emit('metrics_update', metrics);
+    }
+
+    public broadcastToStream(streamId: string, event: string, data: any) {
+        this.io.to(`stream_${streamId}`).emit(event, data);
     }
 }

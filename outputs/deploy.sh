@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# YLIV 4.0 Deployment Script (Linux/macOS)
+# SeeWhy LIVE Deployment Script (Linux/macOS)
 
 echo -e "\e[36m==========================================\e[0m"
-echo -e "\e[36m   YLIV 4.0 - AUTOMATED DEPLOYMENT      \e[0m"
+echo -e "\e[36m   SeeWhy LIVE by SWANYTHREE EnTech - AUTOMATED DEPLOYMENT      \e[0m"
 echo -e "\e[36m==========================================\e[0m"
 
 # 1. Setup Backend

@@ -1,7 +1,7 @@
 {
-  "name": "yliv-backend",
+  "name": "seewhy-backend",
   "version": "4.0.0",
-  "description": "Next Gen Live Streaming Platform",
+  "description": "SeeWhy LIVE - Next Gen Live Streaming Platform",
   "main": "dist/src/index.js",
   "scripts": {
     "start": "node dist/src/index.js",
@@ -11,7 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:reset": "prisma migrate reset --force",
-    "db:setup": "prisma migrate dev --name init && ts-node prisma/seed.ts"
+    "db:setup": "prisma db push && ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",

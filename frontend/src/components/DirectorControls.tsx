@@ -2,83 +2,71 @@ import React from 'react';
 import { Mic, MicOff, UserMinus, LayoutGrid, Monitor, Settings, Zap } from 'lucide-react';
 
 interface DirectorControlsProps {
-    guests: any[];
-    onMute: (id: string) => void;
-    onRemove: (id: string) => void;
-    onFinish?: () => void;
+    streamType: string;
+    onTypeChange: (type: string) => void;
 }
 
-const DirectorControls: React.FC<DirectorControlsProps> = ({ guests, onMute, onRemove, onFinish }) => {
+const DirectorControls: React.FC<DirectorControlsProps> = ({ streamType, onTypeChange }) => {
     return (
-        <div className="flex flex-col h-full gap-6">
-            <div className="flex items-center gap-2 mb-2">
-                <Monitor className="text-red-500" size={24} />
-                <h2 className="text-xl font-bold uppercase tracking-widest text-white">Director</h2>
+        <div className="space-y-4">
+            <div className="bg-black/40 p-1 rounded-2xl border border-white/5 grid grid-cols-2 gap-1">
+                <SceneButton
+                    active={streamType === 'grid'}
+                    icon={<LayoutGrid size={16} />}
+                    label="GRID"
+                    onClick={() => onTypeChange('grid')}
+                />
+                <SceneButton
+                    active={streamType === 'single'}
+                    icon={<Zap size={16} />}
+                    label="SOLO"
+                    onClick={() => onTypeChange('single')}
+                />
+                <SceneButton
+                    active={streamType === 'audio'}
+                    icon={<Mic size={16} />}
+                    label="AUDIO"
+                    onClick={() => onTypeChange('audio')}
+                />
+                <SceneButton
+                    active={streamType === 'pip'}
+                    icon={<Settings size={16} />}
+                    label="PIP"
+                    onClick={() => onTypeChange('pip')}
+                />
             </div>
 
-            <div className="space-y-4 flex-grow overflow-y-auto pr-2">
-                <p className="text-xs font-bold text-gray-500 uppercase">Live Guests ({guests.length}/9)</p>
-
-                {guests.map((guest) => (
-                    <div key={guest.id} className="glass-morphism p-3 flex items-center justify-between border-l-4 border-red-500">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gray-800" />
-                            <span className="text-sm font-medium truncate max-w-[100px]">{guest.name}</span>
-                        </div>
-                        <div className="flex gap-1">
-                            <ControlButton
-                                icon={guest.isMuted ? <MicOff size={16} className="text-red-500" /> : <Mic size={16} />}
-                                onClick={() => onMute(guest.id)}
-                            />
-                            <ControlButton
-                                icon={<UserMinus size={16} className="text-gray-400" />}
-                                onClick={() => onRemove(guest.id)}
-                                danger
-                            />
-                        </div>
-                    </div>
-                ))}
-
-                {guests.length < 9 && (
-                    <button className="w-full py-3 border-2 border-dashed border-gray-700 rounded-xl text-gray-500 hover:border-red-500 hover:text-red-500 transition-all text-xs font-bold">
-                        + INVITE GUEST
-                    </button>
-                )}
-            </div>
-
-            <div className="space-y-3 pt-6 border-t border-gray-800">
-                <p className="text-xs font-bold text-gray-500 uppercase">Production Scene</p>
-                <div className="grid grid-cols-2 gap-2">
-                    <SceneButton active icon={<LayoutGrid size={18} />} label="GRID" />
-                    <SceneButton icon={<Zap size={18} />} label="FOCUS" />
-                    <SceneButton icon={<Monitor size={18} />} label="SOLO" />
-                    <SceneButton icon={<Settings size={18} />} label="PIP" />
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-3">
+                <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Master Output</span>
+                    <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
+                </div>
+                <div className="space-y-2">
+                    <ProductionToggle label="20 Xeron Gateway" active />
+                    <ProductionToggle label="AI Scene Assist" active />
+                    <ProductionToggle label="Auto-Clipping" />
                 </div>
             </div>
-
-            <button
-                onClick={onFinish}
-                className="btn-primary w-full py-4 mt-auto"
-            >
-                FINISH STREAM
-            </button>
         </div>
     );
 };
 
-const ControlButton = ({ icon, onClick, danger = false }: any) => (
-    <button
-        onClick={onClick}
-        className={`p-2 rounded-lg transition-colors ${danger ? 'hover:bg-red-500/20' : 'hover:bg-white/10'}`}
-    >
-        {icon}
-    </button>
+const ProductionToggle = ({ label, active = false }: { label: string; active?: boolean }) => (
+    <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded-xl transition-colors cursor-pointer group">
+        <span className={`text-[10px] font-bold ${active ? 'text-gray-300' : 'text-gray-600'}`}>{label}</span>
+        <div className={`w-8 h-4 rounded-full transition-colors relative ${active ? 'bg-red-600' : 'bg-gray-800'}`}>
+            <div className={`absolute top-1 w-2 h-2 rounded-full bg-white transition-all ${active ? 'right-1' : 'left-1'}`} />
+        </div>
+    </div>
 );
 
-const SceneButton = ({ icon, label, active = false }: any) => (
-    <button className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition-all ${active ? 'bg-red-500 border-red-500 text-white' : 'border-gray-800 text-gray-500 hover:border-gray-600'}`}>
+const SceneButton = ({ icon, label, active = false, onClick }: any) => (
+    <button
+        onClick={onClick}
+        className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${active ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-600/20' : 'border-transparent text-gray-500 hover:text-white hover:bg-white/5'}`}
+    >
         {icon}
-        <span className="text-[10px] font-black">{label}</span>
+        <span className="text-[9px] font-black tracking-tighter">{label}</span>
     </button>
 );
 

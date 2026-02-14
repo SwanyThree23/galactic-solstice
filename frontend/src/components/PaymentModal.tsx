@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DollarSign, Zap, CheckCircle, CreditCard, X } from 'lucide-react';
+import { DollarSign, Zap, CheckCircle, CreditCard, X, Heart } from 'lucide-react';
+import { useSocket } from '../hooks/useSocket';
 
-const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void; streamId?: string }> = ({ isOpen, onClose, streamId = 'cy-live-prod-001' }) => {
     const [step, setStep] = useState(1);
     const [selectedAmount, setSelectedAmount] = useState(10);
+    const { socket } = useSocket();
 
     const amounts = [1, 5, 10, 50, 100, 500];
+
+    const handleDonate = () => {
+        setStep(2);
+        if (socket) {
+            socket.emit('donation_received', {
+                streamId,
+                amount: selectedAmount,
+                sender: 'A Generous Creator', // In production, get from user profile
+                message: 'Keep up the amazing work! 🚀'
+            });
+        }
+    };
 
     return (
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4">
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/90 backdrop-blur-2xl" onClick={onClose} />
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/95 backdrop-blur-3xl" onClick={onClose} />
 
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 50 }}
@@ -28,7 +42,7 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                                             <h3 className="text-3xl font-black uppercase tracking-tight italic">Direct Support</h3>
                                             <p className="text-gray-500 font-medium">90% of your contribution goes directly to the creator.</p>
                                         </div>
-                                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full"><X /></button>
+                                        <button onClick={onClose} title="Close Support Modal" className="p-2 hover:bg-white/5 rounded-full"><X /></button>
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-4">
@@ -36,6 +50,7 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                                             <button
                                                 key={amt}
                                                 onClick={() => setSelectedAmount(amt)}
+                                                title={`Support with $${amt}`}
                                                 className={`py-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${selectedAmount === amt ? 'bg-red-600 border-red-500 shadow-lg shadow-red-600/30' : 'bg-white/5 border-white/5 hover:border-white/10'}`}
                                             >
                                                 <span className="text-2xl font-black">${amt}</span>
@@ -54,8 +69,8 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                                     </div>
 
                                     <button
-                                        onClick={() => setStep(2)}
-                                        className="w-full py-5 bg-white text-black rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-gray-200 transition-all flex items-center justify-center gap-3"
+                                        onClick={handleDonate}
+                                        className="w-full py-5 bg-white text-black rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-gray-200 transition-all flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                                     >
                                         <Zap size={24} fill="black" />
                                         SEND ${selectedAmount} NOW
@@ -63,14 +78,24 @@ const PaymentModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                                 </div>
                             ) : (
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center py-12 text-center space-y-6">
-                                    <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(34,197,94,0.4)]">
-                                        <CheckCircle size={48} className="text-white" />
+                                    <div className="relative">
+                                        <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(34,197,94,0.5)]">
+                                            <CheckCircle size={48} className="text-white" />
+                                        </div>
+                                        <motion.div
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: [1, 1.5, 1] }}
+                                            transition={{ repeat: Infinity, duration: 2 }}
+                                            className="absolute -top-4 -right-4 text-red-500"
+                                        >
+                                            <Heart fill="currentColor" size={32} />
+                                        </motion.div>
                                     </div>
                                     <div>
-                                        <h3 className="text-4xl font-black italic">TRANSACTION SENT!</h3>
-                                        <p className="text-gray-500 mt-2">The creator has been notified in real-time.</p>
+                                        <h3 className="text-4xl font-black italic tracking-tighter uppercase">Transaction Sent!</h3>
+                                        <p className="text-gray-500 mt-2 font-medium tracking-tight">The K2 Network has confirmed your contribution.</p>
                                     </div>
-                                    <button onClick={onClose} className="btn-primary w-full py-4 mt-8">CONTINUE WATCHING</button>
+                                    <button onClick={onClose} className="btn-primary w-full py-4 mt-8 uppercase font-black tracking-widest text-[10px]">Back to Stream</button>
                                 </motion.div>
                             )}
                         </div>

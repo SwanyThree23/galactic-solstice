@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function seed() {
-    console.log('🔴 YLIV 4.0 — Seeding database...\n');
+    console.log('🔴 SeeWhy LIVE — Seeding database...\n');
 
     // ── Users ──
     const passwordHash = await bcrypt.hash('demo1234', 10);
@@ -17,7 +17,7 @@ async function seed() {
             email: 'alex@seewhy.live',
             password: passwordHash,
             isCreator: true,
-            bio: 'Streaming the future of YLIV 4.0. 🚀',
+            bio: 'Streaming the future of SeeWhy LIVE. 🚀',
             revenue: 2400,
         },
     });
@@ -44,7 +44,7 @@ async function seed() {
             update: {},
             create: {
                 id: 'stream-001',
-                title: 'Elite Strategy Session: YLIV 4.0 Pro',
+                title: 'Elite Strategy Session: SeeWhy LIVE Pro',
                 description: 'Full capabilities demo of the SeeWhy LIVE platform with 9+ guests and AI director swarm.',
                 userId: alex.id,
                 isLive: true,
@@ -163,7 +163,7 @@ async function seed() {
 
     console.log(`  ✅ Analytics: 2 records`);
 
-    console.log('\n🟢 YLIV 4.0 database seeded successfully!');
+    console.log('\n🟢 SeeWhy LIVE database seeded successfully!');
     console.log(`\n  Demo Login:`);
     console.log(`    Email:    alex@seewhy.live`);
     console.log(`    Password: demo1234\n`);

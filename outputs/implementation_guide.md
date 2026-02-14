@@ -1,4 +1,4 @@
-# YLIV 4.0 | SeeWhy LIVE Implementation Guide
+# SeeWhy LIVE by SWANYTHREE EnTech Implementation Guide
 
 ## 🔧 Backend Architecture
 

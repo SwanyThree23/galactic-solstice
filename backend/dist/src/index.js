@@ -15,7 +15,7 @@ new SocketService_1.SocketService(server);
 server.listen(port, () => {
     console.log(`
   ==========================================
-  YLIV 4.0 - Next Gen Streaming Platform
+  SeeWhy LIVE by SWANYTHREE EnTech - Next Gen Streaming Platform
   Server running on port ${port}
   Aesthetics: PREMIUM
   Status: PRODUCTION READY

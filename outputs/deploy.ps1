@@ -1,7 +1,7 @@
-# YLIV 4.0 Deployment Script (Windows PowerShell)
+# SeeWhy LIVE Deployment Script (Windows PowerShell)
 
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "   YLIV 4.0 - AUTOMATED DEPLOYMENT      " -ForegroundColor Cyan
+Write-Host "   SeeWhy LIVE by SWANYTHREE EnTech - AUTOMATED DEPLOYMENT      " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 
 # 1. Setup Backend
@@ -20,10 +20,10 @@ npm install
 npm run build
 Set-Location ..
 
-# 3. Launch Docker (Optional)
+# 3. Launch Docker
 Write-Host "[3/4] Launching Production Services..." -ForegroundColor Yellow
 Write-Host "Note: Ensure Docker Desktop is running." -ForegroundColor Gray
-# docker-compose up -d
+docker-compose up -d
 
 # 4. Success
 Write-Host "==========================================" -ForegroundColor Green

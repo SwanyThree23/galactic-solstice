@@ -11,7 +11,7 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ message: 'Authentication required' });
     }
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'yliv_secret');
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'seewhy_secret');
         req.user = decoded;
         next();
     }

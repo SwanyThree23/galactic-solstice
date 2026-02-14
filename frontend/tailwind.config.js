@@ -11,7 +11,7 @@ export default {
                 display: ['Outfit', 'system-ui', 'sans-serif'],
             },
             colors: {
-                yliv: {
+                seewhy: {
                     deep: '#050505',
                     dark: '#0a0a0a',
                     card: '#121212',

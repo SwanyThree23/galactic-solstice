@@ -34,7 +34,7 @@ const Register: React.FC = () => {
             >
                 <div className="text-center mb-10">
                     <h1 className="text-5xl font-black tracking-tighter brand">
-                        JOIN <span className="text-red-600">YLIV</span>
+                        JOIN <span className="text-red-600">SeeWhy LIVE</span>
                     </h1>
                     <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mt-2">Create Your Creator Account</p>
                 </div>
